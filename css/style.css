@@ -52,6 +52,7 @@ button.good-delete {
 
     height: 50px;
     margin-top: 15px;
+    margin-bottom: 15px;
 }
 
 .price-title,
@@ -77,8 +78,9 @@ td {
 }
 
 .good,
-.price-good {
+#good-price,
+#good-price-addon {
     display: flex;
     align-items: center;
-    height: 60px;
+    height: 40px;
 }

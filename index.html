@@ -23,15 +23,15 @@
                 &#10010;
               </button>
             </div>
-            <div class="table-responsive">
+            <div class="table-responsive-lg">
               <table class="goods table mt-3" id="table1">
                 <thead class="table-primary align-middle">
                   <th data-type="number">№</th>
                   <th data-type="string">Название</th>
                   <th data-type="number">Цена, &#8381;</th>
                   <th data-type="number">Количество</th>
-                  <th data-type="number"></th>
-                  <th data-type="number"></th>
+                  <th></th>
+                  <th></th>
                 </thead>
                 <tbody class="list"></tbody>
               </table>
@@ -42,19 +42,19 @@
           <div class="price-box">
             <div class="menu">
               <div class="price-title">
-                Итого: <span class="price-result">0 &#8381;</span>
+                Итого: <span class="total-cost">0 &#8381;</span>
               </div>
             </div>
-            <div class="table-responsive">
+            <div class="table-responsive-lg">
               <table class="price table mt-3" id="table2">
                 <thead class="table-primary align-middle">
                   <tr>
                     <th data-type="number">№</th>
                     <th data-type="string">Название</th>
-                    <th data-type="number">Цена, шт.</th>
+                    <th data-type="number">Цена, &#8381;</th>
                     <th data-type="number">Количество</th>
                     <th>Скидка, %</th>
-                    <th data-type="number">Цена, &#8381;</th>
+                    <th data-type="number">Стоимость, &#8381;</th>
                     <th></th>
                   </tr>
                 </thead>
@@ -87,12 +87,15 @@
               maxlength="40"
             />
             <label for="good-price" class="form-label">Цена</label>
-            <input
-              type="number"
-              class="form-control mb-3"
-              id="good-price"
-              min="0"
-            />
+            <div class="input-group">
+              <input
+                type="number"
+                class="form-control mb-3"
+                id="good-price"
+                min="0"
+              />
+              <span class="input-group-text" id="good-price-addon">&#8381;</span>
+            </div>
             <label for="good-count" class="form-label">Количество</label>
             <input
               type="number"
