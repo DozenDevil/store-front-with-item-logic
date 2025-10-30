@@ -1,4 +1,4 @@
-const goodsIndex = {
+const goodsIndex = Object.freeze({
     Id: 0,
     Name: 1,
     Price: 2,
@@ -6,22 +6,43 @@ const goodsIndex = {
     InCartCount: 4,
     Discount: 5,
     InCartCost: 6,
-};
+})
 
 if (!localStorage.getItem('goods')) {
     localStorage.setItem('goods', JSON.stringify([]))
 }
 
+function clear_goods() {
+    localStorage.setItem('goods', JSON.stringify([]))
+    update_goods()
+}
+
+function test_goods() {
+    localStorage.setItem('goods', JSON.stringify([
+        ["good_0", "Огурцы", 85, 50, 0, 0, 0],
+        ["good_1", "Телевизор", 41300, 3, 0, 0, 0],
+        ["good_2", "Куртка", 2999, 12, 0, 0, 0],
+        ["good_3", "Outer Wilds - Archaeologist Edition", 1700, 999, 0, 0, 0],
+    ]))
+    update_goods()
+}
+
 const myModal = new bootstrap.Modal(document.getElementById('exampleModal'))
+
+let options = {
+    valueNames: ['name', 'price']
+}
+
+let userList
 
 document.querySelector('button.add-new').addEventListener('click', function (e) {
     let name = document.getElementById('good-name').value
-    let price = document.getElementById('good-price').value
-    let count = document.getElementById('good-count').value
+    let price = Math.min(Number(document.getElementById('good-price').value), 999999)
+    let count = Math.min(Number(document.getElementById('good-count').value), 999)
 
     if (name && price && count) {
         document.getElementById('good-name').value = ''
-        document.getElementById('good-price').value = ''
+        document.getElementById('good-price').value = '0'
         document.getElementById('good-count').value = '1'
 
         let goods = JSON.parse(localStorage.getItem('goods'))
@@ -98,6 +119,8 @@ function update_goods() {
                             <input
                                 data-good-id="${goods[i][goodsIndex.Id]}"
                                 type="number"
+                                min="0"
+                                max="999"
                                 value="${goods[i][goodsIndex.InCartCount]}"
                             />
                         </td>
@@ -106,8 +129,6 @@ function update_goods() {
                             <button
                                 class="good-delete btn btn-danger"
                                 data-delete="${goods[i][goodsIndex.Id]}"
-                                min="0"
-                                max="999"
                             >
                                 &#10006;
                             </button>
@@ -118,7 +139,7 @@ function update_goods() {
             }
         }
 
-        //userList = new List('goods', options)
+        userList = new List('goods', options)
     }
     else {
         table1.hidden = true
@@ -127,3 +148,37 @@ function update_goods() {
 
     document.querySelector('.total-cost').innerHTML = totalCost + ' &#8381;'
 }
+
+document.querySelector('.list').addEventListener('click', function (e) {
+    if (!e.target.dataset.delete) {
+        return
+    }
+    Swal.fire({
+        title: 'Внимание!',
+        text: 'Вы действительно хотите удалить товар?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Да',
+        cancelButtonText: 'Отмена'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let goods = JSON.parse(localStorage.getItem('goods'))
+
+            for(let i = 0; i < goods.length; i++) {
+                if (goods[i][goodsIndex.Id] == e.target.dataset.delete) {
+                    goods.splice(i, 1)
+                    localStorage.setItem('goods', JSON.stringify(goods))
+                    update_goods()
+                }
+            }
+
+            Swal.fire(
+                "Удалено",
+                "Выбранный товар был успешно удалён",
+                "success"
+            )
+        }
+    })
+})
