@@ -19,7 +19,7 @@ function clear_goods() {
 
 function test_goods() {
     localStorage.setItem('goods', JSON.stringify([
-        ["good_0", "Огурцы", 85, 50, 0, 0, 0],
+        ["good_0", "Огурец", 85, 50, 0, 0, 0],
         ["good_1", "Телевизор", 41300, 3, 0, 0, 0],
         ["good_2", "Куртка", 2999, 12, 0, 0, 0],
         ["good_3", "Outer Wilds - Archaeologist Edition", 1700, 999, 0, 0, 0],
@@ -79,7 +79,7 @@ function update_goods() {
 
         for (let i = 0; i < goods.length; i++) {
             tbody.insertAdjacentHTML('beforeend',
-            `
+                `
                 <tr class="align-middle">
                     <td>${i + 1}</td>
                     <td class="name">${goods[i][goodsIndex.Name]}</td>
@@ -87,16 +87,16 @@ function update_goods() {
                     <td class="count">${goods[i][goodsIndex.Count]}</td>
                     <td>
                         <button
-                            class="good-delete btn btn-danger"
-                            data-delete="${goods[i][goodsIndex.Id]}"
+                            class="good-remove btn btn-danger"
+                            data-remove="${goods[i][goodsIndex.Id]}"
                         >
                             &#10006;
                         </button>
                     </td>
                     <td>
                         <button
-                            class="good-delete btn btn-primary"
-                            data-goods="${goods[i][goodsIndex.Id]}"
+                            class="good-add-to-cart btn btn-primary"
+                            data-add-to-cart="${goods[i][goodsIndex.Id]}"
                         >
                             &#10149;
                         </button>
@@ -109,7 +109,7 @@ function update_goods() {
                 goods[i][goodsIndex.InCartCost] = goods[i][goodsIndex.InCartCount] * goods[i][goodsIndex.Price] * (1 - goods[i][goodsIndex.Discount] / 100)
                 totalCost += goods[i][goodsIndex.InCartCost]
                 document.querySelector("tbody.cart").insertAdjacentHTML('beforeend',
-                `
+                    `
                     <tr class="align-middle">
                         <td>${i + 1}</td>
                         <td class="in-cart-name">${goods[i][goodsIndex.Name]}</td>
@@ -117,18 +117,19 @@ function update_goods() {
                         <td class="in-cart-count">${goods[i][goodsIndex.InCartCount]}</td>
                         <td class="in-cart-discount">
                             <input
+                                name="discount-field-${i + 1}"
                                 data-good-id="${goods[i][goodsIndex.Id]}"
                                 type="number"
                                 min="0"
-                                max="999"
-                                value="${goods[i][goodsIndex.InCartCount]}"
+                                max="100"
+                                value="${goods[i][goodsIndex.Discount]}"
                             />
                         </td>
                         <td class="in-cart-cost">${goods[i][goodsIndex.InCartCost]}</td>
                         <td>
                             <button
-                                class="good-delete btn btn-danger"
-                                data-delete="${goods[i][goodsIndex.Id]}"
+                                class="good-remove-from-cart btn btn-danger"
+                                data-remove-from-cart="${goods[i][goodsIndex.Id]}"
                             >
                                 &#10006;
                             </button>
@@ -150,12 +151,24 @@ function update_goods() {
 }
 
 document.querySelector('.list').addEventListener('click', function (e) {
-    if (!e.target.dataset.delete) {
+    if (!e.target.dataset.remove) {
         return
     }
+
+    let goods = JSON.parse(localStorage.getItem('goods'))
+
+    let targetGoodName
+    for (let i = 0; i < goods.length; i++) {
+        if (goods[i][goodsIndex.Id] == e.target.dataset.remove) {
+            targetGoodName = goods[i][goodsIndex.Name]
+            break
+        }
+    }
+
     Swal.fire({
         title: 'Внимание!',
-        text: 'Вы действительно хотите удалить товар?',
+        html: `Вы действительно хотите удалить товар <br>
+                <strong>"${targetGoodName}"</strong>?`,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
@@ -164,13 +177,12 @@ document.querySelector('.list').addEventListener('click', function (e) {
         cancelButtonText: 'Отмена'
     }).then((result) => {
         if (result.isConfirmed) {
-            let goods = JSON.parse(localStorage.getItem('goods'))
-
-            for(let i = 0; i < goods.length; i++) {
-                if (goods[i][goodsIndex.Id] == e.target.dataset.delete) {
+            for (let i = 0; i < goods.length; i++) {
+                if (goods[i][goodsIndex.Id] == e.target.dataset.remove) {
                     goods.splice(i, 1)
                     localStorage.setItem('goods', JSON.stringify(goods))
                     update_goods()
+                    break
                 }
             }
 
@@ -181,4 +193,40 @@ document.querySelector('.list').addEventListener('click', function (e) {
             )
         }
     })
+})
+
+document.querySelector('.list').addEventListener('click', function (e) {
+    if (!e.target.dataset.addToCart) {
+        return
+    }
+
+    let goods = JSON.parse(localStorage.getItem('goods'))
+
+    for (let i = 0; i < goods.length; i++) {
+        if (goods[i][goodsIndex.Count] > 0 &&
+            goods[i][goodsIndex.Id] == e.target.dataset.addToCart) {
+            goods[i][goodsIndex.Count] -= 1
+            goods[i][goodsIndex.InCartCount] += 1
+            localStorage.setItem('goods', JSON.stringify(goods))
+            update_goods()
+        }
+    }
+})
+
+document.querySelector('.cart').addEventListener('click', function (e) {
+    if (!e.target.dataset.removeFromCart) {
+        return
+    }
+
+    let goods = JSON.parse(localStorage.getItem('goods'))
+
+    for (let i = 0; i < goods.length; i++) {
+        if (goods[i][goodsIndex.InCartCount] > 0 &&
+            goods[i][goodsIndex.Id] == e.target.dataset.removeFromCart) {
+            goods[i][goodsIndex.Count] += goods[i][goodsIndex.InCartCount]
+            goods[i][goodsIndex.InCartCount] = 0
+            localStorage.setItem('goods', JSON.stringify(goods))
+            update_goods()
+        }
+    }
 })
