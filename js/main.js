@@ -8,6 +8,45 @@ const goodsIndex = Object.freeze({
     InCartCost: 6,
 })
 
+table1.onclick = function (e) {
+    if (e.target.tagName != 'TH')
+        return
+
+    let th = e.target
+    sortTable(th.cellIndex, th.dataset.type, 'table1')
+}
+
+table2.onclick = function (e) {
+    if (e.target.tagName != 'TH')
+        return
+
+    let th = e.target
+    sortTable(th.cellIndex, th.dataset.type, 'table2')
+}
+
+function sortTable(colNum, type, id) {
+    let elem = document.getElementById(id)
+    let tbody = elem.querySelector('tbody')
+    let rowsArray = Array.from(tbody.rows)
+
+    let compare
+    switch (type) {
+        case 'number':
+            compare = function (rowA, rowB) {
+                return rowA.cells[colNum].innerHTML - rowB.cells[colNum].innerHTML
+            }
+            break
+        case 'string':
+            compare = function (rowA, rowB) {
+                return rowA.cells[colNum].innerHTML > rowB.cells[colNum].innerHTML ? 1 : -1
+            }
+            break
+    }
+
+    rowsArray.sort(compare)
+    tbody.append(...rowsArray)
+}
+
 if (!localStorage.getItem('goods')) {
     localStorage.setItem('goods', JSON.stringify([]))
 }
@@ -106,7 +145,7 @@ function update_goods() {
             )
 
             if (goods[i][goodsIndex.InCartCount] > 0) {
-                goods[i][goodsIndex.InCartCost] = goods[i][goodsIndex.InCartCount] * goods[i][goodsIndex.Price] * (1 - goods[i][goodsIndex.Discount] / 100)
+                goods[i][goodsIndex.InCartCost] = Math.round(Math.max(0, goods[i][goodsIndex.InCartCount] * goods[i][goodsIndex.Price] * (1 - goods[i][goodsIndex.Discount] / 100)) * 100) / 100
                 totalCost += goods[i][goodsIndex.InCartCost]
                 document.querySelector("tbody.cart").insertAdjacentHTML('beforeend',
                     `
@@ -119,9 +158,8 @@ function update_goods() {
                             <input
                                 name="discount-field-${i + 1}"
                                 data-good-id="${goods[i][goodsIndex.Id]}"
-                                type="number"
-                                min="0"
-                                max="100"
+                                type="text"
+                                maxLength="3"
                                 value="${goods[i][goodsIndex.Discount]}"
                             />
                         </td>
@@ -227,6 +265,40 @@ document.querySelector('.cart').addEventListener('click', function (e) {
             goods[i][goodsIndex.InCartCount] = 0
             localStorage.setItem('goods', JSON.stringify(goods))
             update_goods()
+        }
+    }
+})
+
+document.querySelector('.cart').addEventListener('input', function (e) {
+    if (!e.target.dataset.goodId) {
+        return
+    }
+
+    let goods = JSON.parse(localStorage.getItem('goods'))
+
+    for (let i = 0; i < goods.length; i++) {
+        if (goods[i][goodsIndex.Id] == e.target.dataset.goodId) {
+            if (!isNaN(e.target.value)) {
+                if (e.target.value.length < 1) {
+                    e.target.value = 0
+                }
+                else if (e.target.value[0] == 0) {
+                    e.target.value = e.target.value.slice(1)
+                }
+
+                if (e.target.value > 100) {
+                    e.target.value = 100
+                }
+
+                goods[i][goodsIndex.Discount] = e.target.value
+                localStorage.setItem('goods', JSON.stringify(goods))
+            }
+            
+            update_goods()
+
+            let input = document.querySelector(`[data-good-id="${goods[i][goodsIndex.Id]}"]`)
+            input.focus()
+            input.selectionStart = input.value.length
         }
     }
 })
