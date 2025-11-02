@@ -12,13 +12,13 @@
     <div class="container">
       <div class="row">
         <div class="col-xs-12 col-lg-5">
-          <div class="goods-box" id="goods">
+          <div class="goods-box" id="goods-list">
             <div class="menu">
               <input
+                id="search-field"
                 type="text"
                 placeholder="Поиск"
                 class="search"
-                name="search-field"
               />
               <button
                 class="add btn btn-success"
@@ -29,7 +29,7 @@
               </button>
             </div>
             <div class="table-responsive">
-              <table class="goods table mt-3" id="table1">
+              <table class="table mt-3" id="table1">
                 <thead>
                   <tr class="table-primary align-middle">
                     <th data-type="number">№</th>
@@ -40,7 +40,16 @@
                     <th></th>
                   </tr>
                 </thead>
-                <tbody class="list"></tbody>
+                <tbody class="list">
+                  <tr>
+                    <td></td>
+                    <td class="name"></td>
+                    <td class="price"></td>
+                    <td class="count"></td>
+                    <td></td>
+                    <td></td>
+                  </tr>
+                </tbody>
               </table>
             </div>
           </div>
@@ -48,7 +57,7 @@
         <div class="col-xs-12 col-lg-7">
           <div class="price-box">
             <div class="menu">
-              <div class="price-title">
+              <div class="total-cost-title">
                 Итого: <span class="total-cost">0 &#8381;</span>
               </div>
             </div>
@@ -99,9 +108,9 @@
                 type="number"
                 class="form-control mb-3"
                 id="good-price"
-                min="0"
+                min="1"
                 max="999999"
-                value="0"
+                value="1"
               />
               <span class="input-group-text" id="good-price-addon"
                 >&#8381;</span
@@ -127,6 +136,6 @@
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/sweetalert2.all.min.js"></script>
     <script src="js/list.min.js"></script>
-    <script src="js/main.js"></script>
+    <script type="module" src="js/main.js"></script>
   </body>
 </html>
