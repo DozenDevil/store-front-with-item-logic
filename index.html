@@ -9,10 +9,13 @@
   </head>
 
   <body>
+    <!-- Основной контейнер магазина -->
     <div class="container">
       <div class="row">
+        <!-- Левая колонка: список товаров -->
         <div class="col-xs-12 col-lg-5">
           <div class="goods-box" id="goods-list">
+            <!-- Панель поиска и кнопка добавления -->
             <div class="menu">
               <input
                 id="search-field"
@@ -28,6 +31,8 @@
                 &#10010;
               </button>
             </div>
+
+            <!-- Таблица товаров -->
             <div class="table-responsive">
               <table class="table mt-3" id="table1">
                 <thead>
@@ -54,6 +59,8 @@
             </div>
           </div>
         </div>
+
+        <!-- Правая колонка: корзина и итоговая сумма -->
         <div class="col-xs-12 col-lg-7">
           <div class="price-box">
             <div class="menu">
@@ -61,6 +68,8 @@
                 Итого: <span class="total-cost">0 &#8381;</span>
               </div>
             </div>
+
+            <!-- Таблица корзины -->
             <div class="table-responsive">
               <table class="price table mt-3" id="table2">
                 <thead>
@@ -82,6 +91,7 @@
       </div>
     </div>
 
+    <!-- Модальное окно добавления товара -->
     <div class="modal fade" id="exampleModal" tabindex="-1">
       <div class="modal-dialog">
         <div class="modal-content">
@@ -133,6 +143,7 @@
       </div>
     </div>
 
+    <!-- Подключение библиотек и скриптов -->
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/sweetalert2.all.min.js"></script>
     <script src="js/list.min.js"></script>

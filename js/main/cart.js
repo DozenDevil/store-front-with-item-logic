@@ -2,6 +2,13 @@ import { getGoods, setGoods } from './storage.js';
 import { updateGoods } from './ui.js';
 import { goodsIndex } from './constants.js';
 
+/**
+ * Уменьшает количество выбранного товара на складе и
+ * увеличивает количество в корзине.
+ *
+ * @param {string|number} id — Идентификатор товара.
+ * @returns {void}
+ */
 export function addToCart(id) {
     let goods = getGoods();
     for (let g of goods) {
@@ -14,6 +21,13 @@ export function addToCart(id) {
     updateGoods();
 }
 
+/**
+ * Полностью убирает товар из корзины, возвращая
+ * его количество обратно на склад.
+ *
+ * @param {string|number} id — Идентификатор товара.
+ * @returns {void}
+ */
 export function removeFromCart(id) {
     let goods = getGoods();
     for (let g of goods) {

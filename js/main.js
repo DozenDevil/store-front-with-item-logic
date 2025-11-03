@@ -1,3 +1,43 @@
+/**
+ * Главный модуль приложения (entry point)
+ * ----------------------------------------
+ * Назначение:
+ *  Инициализирует систему управления товарами и корзиной.
+ *  Подключает все вспомогательные модули, настраивает интерфейс,
+ *  обрабатывает пользовательские события.
+ *
+ * Импортируемые модули:
+ *  - storage.js: работа с localStorage (инициализация, чтение, запись)
+ *  - constants.js: содержит индексы полей, настройки List.js, флаги режима отладки
+ *  - ui.js: функции обновления интерфейса
+ *  - sorting.js: сортировка таблиц по клику на заголовок
+ *  - goods.js: добавление и удаление товаров, тестовые данные
+ *  - cart.js: добавление и удаление товаров из корзины
+ *
+ * Основные функции:
+ *  - initGoods(): проверяет и инициализирует localStorage
+ *  - updateGoods(): отрисовывает таблицы товаров и корзины
+ *  - sortTable(): сортирует таблицы при клике на заголовки
+ *  - addGood(): добавляет новый товар
+ *  - removeGood(): удаляет товар с подтверждением
+ *  - addToCart()/removeFromCart(): операции с корзиной
+ *
+ * Взаимодействие с DOM:
+ *  - Инициализация Bootstrap-модального окна
+ *  - Обработка событий кликов по таблицам и кнопкам
+ *  - Обновление интерфейса после каждой операции
+ *
+ * Отладочный режим (DEBUG_MODE):
+ *  - В консоли доступна функция testGoods() для быстрого наполнения базы
+ *
+ * События:
+ *  - Клик по заголовкам таблиц — сортировка
+ *  - Клик по кнопке "Добавить товар" — добавление в список
+ *  - Клик по кнопке удаления — удаление с подтверждением
+ *  - Клик по кнопкам корзины — добавление/удаление товаров
+ *  - Изменение скидки в корзине — обновление данных
+ */
+
 import { initGoods, setGoods, getGoods } from './main/storage.js';
 import { listOptions, goodsIndex, DEBUG_MODE } from './main/constants.js';
 import { updateGoods } from './main/ui.js';
@@ -20,10 +60,10 @@ const myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
 // Создание объекта List.js для поиска/сортировки
 let userList = new List('goods-list', listOptions);
 
-// Первичная отрисовка товаров
+// Отрисовка товаров
 updateGoods(userList);
 
-// Слушатели кликов по заголовкам таблиц для сортировки
+// Сортировка по заголовкам таблиц
 document.getElementById('table1').onclick = e => {
     if (e.target.tagName === 'TH') {
         sortTable(e.target.cellIndex, e.target.dataset.type, 'table1');
@@ -58,7 +98,7 @@ document.querySelector('button.add-new').addEventListener('click', () => {
     }
 });
 
-// Обработка кликов по списку товаров
+// Удаление товаров и добавление их в корзину
 document.querySelector('.list').addEventListener('click', e => {
     if (e.target.dataset.remove) {
         const goods = getGoods()
@@ -97,7 +137,7 @@ document.querySelector('.list').addEventListener('click', e => {
     }
 });
 
-// Обработка кликов и ввода в корзине
+// Удаление товаров в корзине
 document.querySelector('.cart').addEventListener('click', e => {
     if (e.target.dataset.removeFromCart) {
         removeFromCart(e.target.dataset.removeFromCart);
@@ -105,6 +145,7 @@ document.querySelector('.cart').addEventListener('click', e => {
     }
 });
 
+// Обработка скидки в корзине
 document.querySelector('.cart').addEventListener('input', e => {
     if (!e.target.dataset.goodId) return;
 
