@@ -33,4 +33,4 @@ export const listOptions = {
  * 
  * @type {boolean}
  */
-export const DEBUG_MODE = true;
+export const DEBUG_MODE = false;
