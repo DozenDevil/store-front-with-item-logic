@@ -46,10 +46,24 @@ import { addGood, removeGood, testGoods } from './main/goods.js';
 import { addToCart, removeFromCart } from './main/cart.js';
 
 // Доступ к быстрому заполнению товаров при отладке
-if (DEBUG_MODE) {
+if (DEBUG_MODE.value) {
     window.testGoods = testGoods;
     console.log('[DEBUG] testGoods() доступна из консоли');
 }
+
+// Функция для переключения DEBUG_MODE из консоли
+window.toggleDebugMode = () => {
+    DEBUG_MODE.value = !DEBUG_MODE.value;
+    if (DEBUG_MODE.value) {
+        window.testGoods = testGoods;
+        console.log('[DEBUG] testGoods() теперь доступна из консоли');
+    } else {
+        delete window.testGoods;
+        console.log('[DEBUG] testGoods() больше недоступна из консоли');
+    }
+    return DEBUG_MODE.value;
+};
+console.log('[INFO] Для переключения режима отладки используйте: window.DEBUG_MODE.value = true/false или toggleDebugMode()');
 
 // Инициализация localStorage и интерфейса
 initGoods();
