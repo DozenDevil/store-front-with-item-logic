@@ -97,7 +97,7 @@ document.querySelector('button.add-new').addEventListener('click', () => {
 
     if (name && price && count) {
         document.getElementById('good-name').value = '';
-        document.getElementById('good-price').value = '0';
+        document.getElementById('good-price').value = '1';
         document.getElementById('good-count').value = '1';
 
         addGood(name, price, count);
@@ -182,11 +182,16 @@ document.querySelector('.cart').addEventListener('input', e => {
                 setGoods(goods);
             }
 
-            updateGoods();
+            updateGoods(userList);
 
             let input = document.querySelector(`[data-good-id="${g[goodsIndex.Id]}"]`);
             input.focus();
             input.selectionStart = input.value.length;
         }
     }
+});
+
+// Восстановление поиска List.js при фокусе на поле поиска
+document.getElementById('search-field').addEventListener('focus', function() {
+    userList = new List('goods-list', listOptions);
 });
