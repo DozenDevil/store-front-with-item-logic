@@ -30,7 +30,8 @@ export const listOptions = {
 /**
  * Флаг режима отладки.
  * При включении активирует тестовые функции и вывод отладочной информации.
+ * По умолчанию выключен для продакшн-среды.
  * 
  * @type {boolean}
  */
-export const DEBUG_MODE = true;
+export const DEBUG_MODE = false;
